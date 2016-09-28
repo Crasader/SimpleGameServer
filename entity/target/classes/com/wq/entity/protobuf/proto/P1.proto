@@ -1,0 +1,10 @@
+package com.wq.entity.protobuf.gameServer;
+import "Protocol.proto";
+message p1{
+
+	optional string name = 1;
+}
+
+extend protocol{
+	optional p1 user = 100;
+}

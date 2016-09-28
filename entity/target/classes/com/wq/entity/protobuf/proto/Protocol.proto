@@ -1,0 +1,7 @@
+package com.wq.entity.protobuf;
+message protocol{
+	required string name = 1;
+	optional int32 fromId = 2;
+	optional int32 toId = 3;
+	extensions 100 to 10000;
+}
