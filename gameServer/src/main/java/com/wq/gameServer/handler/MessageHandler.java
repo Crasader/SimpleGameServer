@@ -13,9 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.wq.entity.protobuf.Protocol.protocol;
-import com.wq.entity.protobuf.gameServer.P1;
-import com.wq.entity.protobuf.gameServer.P1.p1;
 import com.wq.gameServer.service.Service;
 
 public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol>{
@@ -23,6 +24,7 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 	private Map<Integer, Channel> channels = new HashMap<>();
 	private List<protocol> messages = new CopyOnWriteArrayList<>();
 	private Map<String, Service> services;
+	Logger logger = LoggerFactory.getLogger("Logger");
 	
 	public MessageHandler(){
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -32,20 +34,19 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, protocol msg)
 			throws Exception {
-		System.out.println("get a message");
-		int userId = msg.getFromId();
-		channels.put(userId, ctx.channel());
+		int fromId = msg.getFromId();
+		channels.put(fromId, ctx.channel());
 		messages.add(msg);
 		
-		// 同步问题，效率而准确的处理
+		// 同步问题，效率而准确的处理，CopyOnWriteArrayList和原子容器
 	}
 
 	public void write(protocol msg){
-		int userId = msg.getToId();
-		if(!channels.containsKey(userId)){
+		int toId = msg.getToId();
+		if(!channels.containsKey(toId)){
 			throw new NullPointerException();
 		}
-		Channel channel = channels.get(userId);
+		Channel channel = channels.get(toId);
 		if(!channel.isActive()){
 			throw new IllegalStateException();
 		}
@@ -60,7 +61,7 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 				return;
 			}
 			List<protocol> tempMessages = new ArrayList<>();
-			tempMessages.addAll(messages); // 需要合适的同步处理
+			tempMessages.addAll(messages); // 同上，需要合适的同步处理
 			messages.clear();
 			for(protocol msg : tempMessages){
 				String serviceName = msg.getName().split("_")[0];
@@ -68,24 +69,13 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 					try {
 						services.get(serviceName).service(msg);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("handleTask : "+e.getMessage());
+						continue;
 					}
 				}
 			}
 		}
 	};
-
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		p1.Builder p = p1.newBuilder();
-		p.setName("111");
-		protocol.Builder proto = protocol.newBuilder();
-		proto.setName("LoginServiceImpl_login");
-		proto.setFromId(1);
-		proto.setExtension(P1.user, p.build());
-		ctx.write(proto.build());
-		super.channelActive(ctx);
-	}
 
 	public Map<String, Service> getServices() {
 		return services;

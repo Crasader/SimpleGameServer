@@ -12,7 +12,7 @@
 	    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 	    
 	<context:component-scan base-package="com.wq.gameServer"/>
-	<aop:aspectj-autoproxy/>
+	<aop:aspectj-autoproxy expose-proxy="true"/>
 	
 	<bean id="Server" class="com.wq.gameServer.Server">
 		<property name="name" value="GameServer"/>
@@ -30,7 +30,7 @@
 	</bean>
 	
 	<bean id="Client" class="com.wq.gameServer.Client">
-		<property name="name" value="ClientToLoginServer"/>
+		<property name="name" value="Client"/>
 		<property name="host" value="localhost"/>
 		<property name="port" value="1000"/>
 		<property name="handlers">
@@ -60,14 +60,14 @@
 	<bean id="MessageHandler" class="com.wq.gameServer.handler.MessageHandler" scope="prototype">
 		<property name="services">
 			<map>
-				<entry key="LoginServiceImpl">
+				<entry key="LoginService">
 					<ref bean="LoginService"/>
 				</entry>
 			</map>
 		</property>
 	</bean>
 	
-	<bean id="LoginService" class="com.wq.gameServer.service.LoginServiceImpl"/>
+	<bean id="LoginService" class="com.wq.gameServer.service.LoginService"/>
 	<bean id="LogService" class="com.wq.gameServer.service.LogService"/>
 	
 </beans>

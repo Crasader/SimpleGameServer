@@ -1,0 +1,14 @@
+package com.wq.gameServer.service;
+
+import com.wq.entity.protobuf.Protocol.protocol;
+import com.wq.entity.protobuf.gameServer.P1;
+
+public class LoginService extends Service implements ILoginService{
+
+	public String login(protocol msg) {
+		System.out.println("Login : "+msg.getExtension(P1.user).getName());
+		return "OK";
+	}
+
+	
+}

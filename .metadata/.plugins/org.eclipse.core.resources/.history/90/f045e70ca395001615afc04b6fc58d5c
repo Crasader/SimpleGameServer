@@ -1,0 +1,65 @@
+package com.wq.gameServer.service;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Aspect
+public class LogService extends AbstractService{
+
+	Logger logger = LoggerFactory.getLogger("Logger");
+	
+	@Pointcut("execution(* com.wq.gameServer.service.*.*(..))")
+	public void serviceAspect(){
+		
+	}
+	
+	@Before("serviceAspect()")
+	public void before(JoinPoint joinPoint){
+		logger.debug("joinPoint : "+joinPoint);
+		logger.debug("joinPoint : "+joinPoint.toLongString());
+		logger.debug("joinPoint : "+joinPoint.toShortString());
+		logger.debug("joinPoint : "+joinPoint.toString());
+		logger.debug("joinPoint : "+joinPoint.getKind());
+		logger.debug("args : "+joinPoint.getArgs()[0]);
+		logger.debug("location : "+joinPoint.getSourceLocation());
+		logger.debug("target : "+joinPoint.getTarget());
+		logger.debug("kind : "+joinPoint.getKind());
+	}
+	
+	@AfterReturning(pointcut="serviceAspect()",returning="result")
+	public void afterReturning(JoinPoint joinPoint, Object result){
+		if(result == null){
+			logger.debug("AfterReturning ");
+		}else{
+			logger.debug("return : "+result);
+		}
+	}
+	
+	@After("serviceAspect()")
+	public void after(JoinPoint joinPoint){
+		logger.debug("After"+joinPoint.getTarget());
+	}
+	
+	@AfterThrowing(pointcut="serviceAspect()", throwing="e")
+	public void afterThrowing(JoinPoint joinPoint, Exception e){
+		logger.error("Error at "+joinPoint.getTarget()+" : "+e.getMessage());
+	}
+	
+	@Around("serviceAspect()")
+	public void around(JoinPoint joinPoint){
+		try{
+			((ProceedingJoinPoint)joinPoint).proceed();
+		}catch(Throwable e){
+			logger.error("Error at "+joinPoint.getTarget()+" : "+e.getMessage());
+		} 
+	}
+}

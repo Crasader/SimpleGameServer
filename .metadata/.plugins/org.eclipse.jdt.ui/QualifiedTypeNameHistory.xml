@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.wq.entity.protobuf.Protocol.protocol"/>
+<fullyQualifiedTypeName name="com.wq.entity.protobuf.Protocol.protocol.Builder"/>
+<fullyQualifiedTypeName name="com.wq.entity.protobuf.gameServer.P1.p1.Builder"/>
+<fullyQualifiedTypeName name="com.wq.entity.protobuf.gameServer.P1"/>
+<fullyQualifiedTypeName name="com.wq.entity.protobuf.gameServer.P1.p1"/>
+</qualifiedTypeNameHistroy>

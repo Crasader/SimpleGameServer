@@ -1,0 +1,8 @@
+package com.wq.gameServer.service;
+
+import com.wq.entity.protobuf.Protocol.protocol;
+
+public interface ILoginService {
+
+	public String login(protocol msg);
+}

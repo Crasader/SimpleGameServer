@@ -9,16 +9,16 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 public class GameStart {
 
 	public static ApplicationContext context = new FileSystemXmlApplicationContext("src/main/resources/springGS.xml");
-	static Logger log = LoggerFactory.getLogger(GameStart.class);
+	static Logger logger = LoggerFactory.getLogger("Logger");
 	
 	public void start(RunnableServer server) throws InterruptedException{
 		while(true){
 			try{
 				server.run();
-				log.info(server.getName() + " start succeed");
+				logger.info(server.getName() + " start succeed");
 				break;
 			}catch(Exception e){
-				log.error(server.getName() + " start failed, try again...");
+				logger.error(server.getName() + " start failed : "+e.getMessage()+", try again...");
 				Thread.sleep(3000);
 				continue;
 			}

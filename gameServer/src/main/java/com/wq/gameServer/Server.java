@@ -23,7 +23,7 @@ public class Server implements RunnableServer{
 	private String name;
 	private int port;
 	private List<String> handlers;
-	Logger log = LoggerFactory.getLogger(Server.class);
+	Logger logger = LoggerFactory.getLogger("Logger");
 	
     public void run() throws Exception {
     	
@@ -56,9 +56,9 @@ public class Server implements RunnableServer{
         	@Override
         	public void operationComplete(ChannelFuture future) throws Exception {
         		if(!future.isSuccess()){
-        			log.error("Close " + getName() + "failed!");
+        			logger.error("Close " + getName() + "failed!");
         		}else{
-        			log.info("Close " + getName() + "succeed");
+        			logger.info("Close " + getName() + "succeed");
         		}
         		future.channel().eventLoop().shutdown();
         	}

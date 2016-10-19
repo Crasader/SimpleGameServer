@@ -16,6 +16,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.wq.entity.protobuf.Protocol.protocol;
+import com.wq.entity.protobuf.gameServer.P1;
+import com.wq.entity.protobuf.gameServer.P1.p1;
 import com.wq.gameServer.GameStart.RunnableServer;
 
 public class Client implements RunnableServer{
@@ -24,7 +27,7 @@ public class Client implements RunnableServer{
 	private String host;
 	private int port;
 	private List<String> handlers;
-	Logger log = LoggerFactory.getLogger(Client.class);
+	Logger logger = LoggerFactory.getLogger("Logger");
 
 	public void run() throws Exception {
 		
@@ -45,7 +48,7 @@ public class Client implements RunnableServer{
 		});
 		
 		// 启动连接
-		ChannelFuture f = b.connect().sync();
+		ChannelFuture f = b.connect();
 		
 		// 连接关闭处理
 		f.channel().closeFuture().addListener(new ChannelFutureListener() {
@@ -53,13 +56,25 @@ public class Client implements RunnableServer{
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if(!future.isSuccess()){
-					log.error("Close " + getName() + "failed!");
+					logger.error("Close " + getName() + "failed!");
 				}else{
-					log.info("Close " + getName() + "succeed");
+					logger.info("Close " + getName() + "succeed");
 				}
 				future.channel().eventLoop().shutdown();
 			}
 		});
+		while(true){
+			Thread.sleep(10);
+			p1.Builder p = p1.newBuilder();
+			p.setName("WQ");
+			protocol.Builder message = protocol.newBuilder();
+			message.setName("LoginService_login");
+			message.setFromId(10001);
+			message.setToId(1);
+			message.setExtension(P1.user, p.build());
+			f.channel().write(message.build());
+		}
+//		f.channel().close().sync();
 	}
 	
 	public String getName() {

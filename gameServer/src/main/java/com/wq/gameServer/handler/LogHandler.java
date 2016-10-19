@@ -11,19 +11,18 @@ import com.google.protobuf.Message;
 
 public class LogHandler extends ChannelInboundMessageHandlerAdapter<Message>{
 	
-	Logger log = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger("Logger");
 
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, Message msg)
 			throws Exception {
-		log.info("MessageReceived");
+		logger.info("MessageReceived");
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 			throws Exception {
-		log.error("ExceptionCaught");
-		cause.printStackTrace();
+		logger.error("LogHandler.exceptionCaught : "+cause.getMessage());
 	}
 
 	@Override
