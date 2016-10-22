@@ -16,9 +16,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wq.entity.protobuf.Protocol.protocol;
-import com.wq.entity.protobuf.gameServer.P1;
-import com.wq.entity.protobuf.gameServer.P1.p1;
 import com.wq.gameServer.GameStart.RunnableServer;
 
 public class Client implements RunnableServer{
@@ -63,18 +60,18 @@ public class Client implements RunnableServer{
 				future.channel().eventLoop().shutdown();
 			}
 		});
-		while(true){
-			Thread.sleep(10);
-			p1.Builder p = p1.newBuilder();
-			p.setName("WQ");
-			protocol.Builder message = protocol.newBuilder();
-			message.setName("LoginService_login");
-			message.setFromId(10001);
-			message.setToId(1);
-			message.setExtension(P1.user, p.build());
-			f.channel().write(message.build());
-		}
-//		f.channel().close().sync();
+//		while(true){
+//			Thread.sleep(10000);
+//			p1.Builder p = p1.newBuilder();
+//			p.setName("WQ");
+//			protocol.Builder message = protocol.newBuilder();
+//			message.setName("LoginService_login");
+//			message.setFromId(10001);
+//			message.setToId(1);
+//			message.setExtension(P1.user, p.build());
+//			f.channel().write(message.build());
+//		}
+		f.channel().close().sync();
 	}
 	
 	public String getName() {

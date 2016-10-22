@@ -1,6 +1,0 @@
-INDEX VERSION 1.122+E:\MyGit\SimpleGameServer\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-21731891.index
-1123281485.index
-2562471520.index
-1770617367.index
-3370202631.index

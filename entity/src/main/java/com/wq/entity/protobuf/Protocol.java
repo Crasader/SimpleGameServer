@@ -27,13 +27,13 @@ public final class Protocol {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // optional int32 fromId = 2;
+    // required int32 fromId = 2;
     /**
-     * <code>optional int32 fromId = 2;</code>
+     * <code>required int32 fromId = 2;</code>
      */
     boolean hasFromId();
     /**
-     * <code>optional int32 fromId = 2;</code>
+     * <code>required int32 fromId = 2;</code>
      */
     int getFromId();
 
@@ -196,17 +196,17 @@ public final class Protocol {
       }
     }
 
-    // optional int32 fromId = 2;
+    // required int32 fromId = 2;
     public static final int FROMID_FIELD_NUMBER = 2;
     private int fromId_;
     /**
-     * <code>optional int32 fromId = 2;</code>
+     * <code>required int32 fromId = 2;</code>
      */
     public boolean hasFromId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int32 fromId = 2;</code>
+     * <code>required int32 fromId = 2;</code>
      */
     public int getFromId() {
       return fromId_;
@@ -239,6 +239,10 @@ public final class Protocol {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasFromId()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -487,6 +491,10 @@ public final class Protocol {
           
           return false;
         }
+        if (!hasFromId()) {
+          
+          return false;
+        }
         if (!extensionsAreInitialized()) {
           
           return false;
@@ -587,22 +595,22 @@ public final class Protocol {
         return this;
       }
 
-      // optional int32 fromId = 2;
+      // required int32 fromId = 2;
       private int fromId_ ;
       /**
-       * <code>optional int32 fromId = 2;</code>
+       * <code>required int32 fromId = 2;</code>
        */
       public boolean hasFromId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int32 fromId = 2;</code>
+       * <code>required int32 fromId = 2;</code>
        */
       public int getFromId() {
         return fromId_;
       }
       /**
-       * <code>optional int32 fromId = 2;</code>
+       * <code>required int32 fromId = 2;</code>
        */
       public Builder setFromId(int value) {
         bitField0_ |= 0x00000002;
@@ -611,7 +619,7 @@ public final class Protocol {
         return this;
       }
       /**
-       * <code>optional int32 fromId = 2;</code>
+       * <code>required int32 fromId = 2;</code>
        */
       public Builder clearFromId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -679,7 +687,7 @@ public final class Protocol {
   static {
     java.lang.String[] descriptorData = {
       "\n\016Protocol.proto\022\026com.wq.entity.protobuf" +
-      "\"=\n\010protocol\022\014\n\004name\030\001 \002(\t\022\016\n\006fromId\030\002 \001" +
+      "\"=\n\010protocol\022\014\n\004name\030\001 \002(\t\022\016\n\006fromId\030\002 \002" +
       "(\005\022\014\n\004toId\030\003 \001(\005*\005\010d\020\221N"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =

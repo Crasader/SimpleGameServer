@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Aspect
-public class LogService{
+public class LogService extends Service{
 
 	Logger logger = LoggerFactory.getLogger("Logger");
 	

@@ -1,5 +1,0 @@
-package com.wq.gameServer.service;
-
-public interface ILoginService {
-
-}

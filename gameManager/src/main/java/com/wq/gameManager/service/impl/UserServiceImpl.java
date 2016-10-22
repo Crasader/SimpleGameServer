@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wq.database.gameManager.UserDao;
+import com.wq.database.mybatis.UserDao;
 import com.wq.gameManager.service.UserService;
 
 @Service("UserService")

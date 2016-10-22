@@ -1,12 +1,21 @@
 package com.wq.gameServer.service;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import com.wq.database.mybatis.UserDao;
+import com.wq.entity.mould.User;
 import com.wq.entity.protobuf.Protocol.protocol;
-import com.wq.entity.protobuf.gameServer.P1;
 
 public class LoginService extends Service{
+	
+	@Resource
+	UserDao userDao;
 
 	public String login(protocol msg) {
-		System.out.println("Login : "+msg.getExtension(P1.user).getName());
+		List<User> userList = userDao.query();
+		System.out.println(userList.get(0).getName());
 		return "OK";
 	}
 

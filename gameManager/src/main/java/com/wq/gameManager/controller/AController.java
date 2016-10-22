@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.wq.database.gameManager.UserDao;
+import com.wq.database.mybatis.UserDao;
 import com.wq.entity.mould.User;
 import com.wq.gameManager.service.UserService;
 

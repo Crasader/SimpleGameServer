@@ -30,28 +30,6 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		executor.scheduleAtFixedRate(handleTask, 0, 100, TimeUnit.MILLISECONDS);
 	}
-
-	@Override
-	public void messageReceived(ChannelHandlerContext ctx, protocol msg)
-			throws Exception {
-		int fromId = msg.getFromId();
-		channels.put(fromId, ctx.channel());
-		messages.add(msg);
-		
-		// 同步问题，效率而准确的处理，CopyOnWriteArrayList和原子容器
-	}
-
-	public void write(protocol msg){
-		int toId = msg.getToId();
-		if(!channels.containsKey(toId)){
-			throw new NullPointerException();
-		}
-		Channel channel = channels.get(toId);
-		if(!channel.isActive()){
-			throw new IllegalStateException();
-		}
-		channel.write(msg);
-	}
 	
 	private Runnable handleTask = new Runnable() {
 		
@@ -76,6 +54,33 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 			}
 		}
 	};
+	
+	public void write(protocol msg){
+		int toId = msg.getToId();
+		if(!channels.containsKey(toId)){
+			throw new NullPointerException();
+		}
+		Channel channel = channels.get(toId);
+		if(!channel.isActive()){
+			throw new IllegalStateException();
+		}
+		channel.write(msg);
+	}
+
+	@Override
+	public void messageReceived(ChannelHandlerContext ctx, protocol msg)
+			throws Exception {
+		int fromId = msg.getFromId();
+		channels.put(fromId, ctx.channel());
+		messages.add(msg);
+		
+		// 同步问题，效率而准确的处理，CopyOnWriteArrayList和原子容器
+	}
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		
+	}
 
 	public Map<String, Service> getServices() {
 		return services;

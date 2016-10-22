@@ -44,12 +44,13 @@
 		</property>
 	</bean>
 	
-	<bean id="ByteEncoder" class="io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender"/>
-	<bean id="Encoder" class="io.netty.handler.codec.protobuf.ProtobufEncoder"/>
-	<bean id="ByteDecoder" class="io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder" scope="prototype"/>
 	<bean id="Protocol" class="com.wq.entity.protobuf.Protocol.protocol" factory-method="getDefaultInstance"/>
 	<bean id="ExtensionRegistry" factory-bean="ExtensionRegistryFactory" factory-method="getInstance"/>
 	<bean id="ExtensionRegistryFactory" class="com.wq.entity.protobuf.ExtensionRegistryFactory"/>
+	
+	<bean id="ByteEncoder" class="io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender"/>
+	<bean id="Encoder" class="io.netty.handler.codec.protobuf.ProtobufEncoder"/>
+	<bean id="ByteDecoder" class="io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder" scope="prototype"/>
 	<bean id="Decoder" class="io.netty.handler.codec.protobuf.ProtobufDecoder">
 		<constructor-arg name="prototype" ref="Protocol"/>
 		<constructor-arg name="extensionRegistry" ref="ExtensionRegistry"/>
