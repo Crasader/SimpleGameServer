@@ -8,7 +8,7 @@
 	
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>GSErrorLog.%d{yyyy-MM}.log</fileNamePattern>
+			<fileNamePattern>ErrorLog.%d{yyyy-MM}.log</fileNamePattern>
 			<maxHistory>10</maxHistory>
 		</rollingPolicy>
 		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -23,7 +23,7 @@
 		<appender-ref ref="FILE"/>
 	</logger>
 	
-	<root level="Trace">
+	<root level="INFO">
 	    <appender-ref ref="STDOUT"/>
 	</root>
 </configuration>

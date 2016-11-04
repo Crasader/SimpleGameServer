@@ -32,8 +32,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/database"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/entity"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/database"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/entity"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gameServer"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

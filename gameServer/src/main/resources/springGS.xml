@@ -13,9 +13,24 @@
 	<context:component-scan base-package="com.wq"/>
 	<aop:aspectj-autoproxy expose-proxy="true"/>
 	
-	<bean id="Server" class="com.wq.gameServer.Server">
+	<bean id="CurrentServerInfo" class="com.wq.entity.server.ServerInfo">
+		<property name="id" value="1"/>
 		<property name="name" value="GameServer"/>
+		<property name="type" value="1"/>
+		<property name="ip" value="127.0.0.1"/>
 		<property name="port" value="1000"/>
+	</bean>
+	
+	<bean id="WorldServerInfo" class="com.wq.entity.server.ServerInfo">
+		<property name="id" value="2"/>
+		<property name="name" value="WorldServer"/>
+		<property name="type" value="2"/>
+		<property name="ip" value="127.0.0.1"/>
+		<property name="port" value="2000"/>
+	</bean>
+	
+	<bean id="Server" class="com.wq.gameServer.Acceptor">
+		<property name="currentServer" ref="CurrentServerInfo"/>
 		<property name="handlers">
 			<list>
 				<value>ByteEncoder</value>
@@ -28,10 +43,8 @@
 		</property>
 	</bean>
 	
-	<bean id="Client" class="com.wq.gameServer.Client">
-		<property name="name" value="Client"/>
-		<property name="host" value="localhost"/>
-		<property name="port" value="1000"/>
+	<bean id="Client" class="com.wq.gameServer.Connector">
+		<property name="serverToConnect" ref="WorldServerInfo"/>
 		<property name="handlers">
 			<list>
 				<value>ByteEncoder</value>
@@ -54,18 +67,23 @@
 		<constructor-arg name="prototype" ref="Protocol"/>
 		<constructor-arg name="extensionRegistry" ref="ExtensionRegistry"/>
 	</bean>
-	<bean id="LogHandler" class="com.wq.gameServer.handler.LogHandler" scope="prototype"/>
-	<bean id="MessageHandler" class="com.wq.gameServer.handler.MessageHandler" scope="prototype">
-		<property name="services">
-			<map>
-				<entry key="LoginService">
-					<ref bean="LoginService"/>
-				</entry>
-			</map>
+	<bean id="LogHandler" class="com.wq.gameServer.handler.LogHandler"/>
+	<bean id="MessageHandler" class="com.wq.gameServer.handler.MessageHandler">
+		<property name="serviceNames">
+			<list>
+				<value>LoginService</value>
+				<value>ServerLoginService</value>
+			</list>
 		</property>
 	</bean>
+	<bean id="Service" class="com.wq.gameServer.service.Service" abstract="true" >
+		<property name="messageHandler" ref="MessageHandler"/>
+	</bean>
 	
-	<bean id="LoginService" class="com.wq.gameServer.service.LoginService"/>
 	<bean id="LogService" class="com.wq.gameServer.service.LogService"/>
+	<bean id="LoginService" class="com.wq.gameServer.service.LoginService" parent="Service"/>
+	<bean id="ServerLoginService" class="com.wq.gameServer.service.ServerLoginService" parent="Service">
+		<property name="currentServer" ref="CurrentServerInfo"/>
+	</bean>
 	<import resource="springDB.xml" /> 
 </beans>

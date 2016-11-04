@@ -3,6 +3,7 @@ package com.wq.gameServer.handler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.channel.ChannelHandler.Sharable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wq.entity.protobuf.Protocol.protocol;
+import com.wq.gameServer.GameStart;
 import com.wq.gameServer.service.Service;
 
+@Sharable
 public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol>{
 	
+	public List<String> serviceNames;
+	public Map<String, Service> services = new HashMap<>();
 	private Map<Integer, Channel> channels = new HashMap<>();
 	private List<protocol> messages = new CopyOnWriteArrayList<>();
-	private Map<String, Service> services;
 	Logger logger = LoggerFactory.getLogger("Logger");
 	
 	public MessageHandler(){
@@ -48,6 +52,7 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 						services.get(serviceName).service(msg);
 					} catch (Exception e) {
 						logger.error("handleTask : "+e.getMessage());
+						e.printStackTrace();
 						continue;
 					}
 				}
@@ -76,19 +81,42 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 		
 		// 同步问题，效率而准确的处理，CopyOnWriteArrayList和原子容器
 	}
-
+	
+	public void loadServices(){
+		for(String name : serviceNames){
+			Service service = (Service)GameStart.context.getBean(name);
+			services.put(name, service);
+		}
+	}
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		
+		if(services == null || services.size() == 0){
+			loadServices();
+		}
+		for(Service service : services.values()){
+			service.activeService(ctx);
+		}
 	}
 
-	public Map<String, Service> getServices() {
-		return services;
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		for(Service service : services.values()){
+			service.inactiveService(ctx);
+		}
 	}
 
-	public void setServices(Map<String, Service> services) {
-		this.services = services;
+	public List<String> getServiceNames() {
+		return serviceNames;
 	}
 
+	public void setServiceNames(List<String> serviceNames) {
+		this.serviceNames = serviceNames;
+	}
+
+	@Override
+	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+		super.channelRegistered(ctx);
+	}
 
 }

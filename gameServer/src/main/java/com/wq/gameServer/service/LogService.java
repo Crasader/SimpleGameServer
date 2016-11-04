@@ -1,5 +1,7 @@
 package com.wq.gameServer.service;
 
+import io.netty.channel.ChannelHandlerContext;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -34,5 +36,15 @@ public class LogService extends Service{
 		}catch(Throwable e){
 			logger.error(joinPoint.getTarget()+" : "+e.getMessage());
 		} 
+	}
+
+	@Override
+	public void activeService(ChannelHandlerContext ctx) {
+		
+	}
+
+	@Override
+	public void inactiveService(ChannelHandlerContext ctx) {
+		
 	}
 }

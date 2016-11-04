@@ -3,8 +3,6 @@
 	<name>gameManager</name>
 	<comment></comment>
 	<projects>
-		<project>entity</project>
-		<project>database</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
