@@ -2,43 +2,99 @@ package com.wq.gameServer.handler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelHandler.Sharable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.wq.entity.protobuf.Protocol.protocol;
-import com.wq.gameServer.GameStart;
-import com.wq.gameServer.service.Service;
+import com.wq.gameServer.service.IGameService;
 
 @Sharable
-public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol>{
-	
-	public List<String> serviceNames;
-	public Map<String, Service> services = new HashMap<>();
-	private Map<Integer, Channel> channels = new HashMap<>();
+public class MessageHandler extends ChannelInboundHandlerAdapter implements IMessageHandler{
+
+	private Map<String, IGameService> services = new ConcurrentHashMap<>();
 	private List<protocol> messages = new CopyOnWriteArrayList<>();
-	Logger logger = LoggerFactory.getLogger("Logger");
+	private ChannelHandlerContext ctx;
 	
 	public MessageHandler(){
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		executor.scheduleAtFixedRate(handleTask, 0, 100, TimeUnit.MILLISECONDS);
 	}
 	
+	@Override
+	public void regist(IGameService service) {
+		services.put(service.getClass().getSimpleName(), service);
+	}
+
+	@Override
+	public void notify(Object obj) {
+		if(obj instanceof protocol){
+			messages.add((protocol)obj);
+		}else if(obj instanceof Channel){
+			Channel channel = (Channel)obj;
+			if(channel.isActive()){
+				for(IGameService service : services.values()){
+					try {
+						service.connect(channel.id().asShortText());
+					} catch (NumberFormatException e) {
+						ctx.fireExceptionCaught(e);
+					} catch (IllegalArgumentException e) {
+						ctx.fireExceptionCaught(e);
+					} catch (IllegalAccessException e) {
+						ctx.fireExceptionCaught(e);
+					} catch (NoSuchFieldException e) {
+						ctx.fireExceptionCaught(e);
+					} catch (SecurityException e) {
+						ctx.fireExceptionCaught(e);
+					} catch (ClassNotFoundException e) {
+						ctx.fireExceptionCaught(e);
+					}
+				}
+			}else{
+				for(IGameService service : services.values()){
+					service.disConnect(channel.id().asShortText());
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void write(Object obj) {
+		ctx.fireUserEventTriggered(obj);
+	}
+	
+	@Override
+	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+		this.ctx = ctx;
+	}
+	
+	@Override
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		notify(msg);
+	}
+	
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		notify(ctx.channel());
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		notify(ctx.channel());
+	}
+
 	private Runnable handleTask = new Runnable() {
 		
 		@Override
-		public void run() {
+		public void run(){
 			if(messages.size() <= 0){
 				return;
 			}
@@ -50,73 +106,14 @@ public class MessageHandler extends ChannelInboundMessageHandlerAdapter<protocol
 				if(services.containsKey(serviceName)){
 					try {
 						services.get(serviceName).service(msg);
-					} catch (Exception e) {
-						logger.error("handleTask : "+e.getMessage());
-						e.printStackTrace();
-						continue;
+					} catch (NoSuchMethodException e) {
+						ctx.fireExceptionCaught(e);
+					} catch (SecurityException e) {
+						ctx.fireExceptionCaught(e);
 					}
-				}
+				}					
 			}
 		}
 	};
-	
-	public void write(protocol msg){
-		int toId = msg.getToId();
-		if(!channels.containsKey(toId)){
-			throw new NullPointerException();
-		}
-		Channel channel = channels.get(toId);
-		if(!channel.isActive()){
-			throw new IllegalStateException();
-		}
-		channel.write(msg);
-	}
-
-	@Override
-	public void messageReceived(ChannelHandlerContext ctx, protocol msg)
-			throws Exception {
-		int fromId = msg.getFromId();
-		channels.put(fromId, ctx.channel());
-		messages.add(msg);
-		
-		// 同步问题，效率而准确的处理，CopyOnWriteArrayList和原子容器
-	}
-	
-	public void loadServices(){
-		for(String name : serviceNames){
-			Service service = (Service)GameStart.context.getBean(name);
-			services.put(name, service);
-		}
-	}
-	
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		if(services == null || services.size() == 0){
-			loadServices();
-		}
-		for(Service service : services.values()){
-			service.activeService(ctx);
-		}
-	}
-
-	@Override
-	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		for(Service service : services.values()){
-			service.inactiveService(ctx);
-		}
-	}
-
-	public List<String> getServiceNames() {
-		return serviceNames;
-	}
-
-	public void setServiceNames(List<String> serviceNames) {
-		this.serviceNames = serviceNames;
-	}
-
-	@Override
-	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-		super.channelRegistered(ctx);
-	}
 
 }

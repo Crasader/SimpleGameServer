@@ -1,7 +1,5 @@
 package com.wq.loginServer.service;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,9 +7,9 @@ import javax.annotation.Resource;
 import com.wq.database.mybatis.UserDao;
 import com.wq.entity.mould.User;
 import com.wq.entity.protobuf.Protocol.protocol;
-import com.wq.gameServer.service.Service;
+import com.wq.gameServer.service.GameService;
 
-public class LoginService extends Service{
+public class LoginService extends GameService{
 	
 	@Resource
 	UserDao userDao;
@@ -23,14 +21,14 @@ public class LoginService extends Service{
 	}
 
 	@Override
-	public void activeService(ChannelHandlerContext ctx) {
+	public void connect(String channelId) throws IllegalArgumentException,
+			IllegalAccessException, NoSuchFieldException, SecurityException {
 		
 	}
 
 	@Override
-	public void inactiveService(ChannelHandlerContext ctx) {
+	public void disConnect(String channelId) {
 		
 	}
-
 	
 }

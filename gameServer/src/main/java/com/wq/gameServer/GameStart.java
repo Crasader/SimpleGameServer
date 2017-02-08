@@ -5,14 +5,18 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 
 public class GameStart {
-
-	public static ApplicationContext context;
 	
+	public ApplicationContext context;
+	
+	public GameStart(String springName){
+		context = new FileSystemXmlApplicationContext(springName);
+	}
+
 	public static void main(String[] args){
-		context = new FileSystemXmlApplicationContext("src/main/resources/springGS.xml");
-		Acceptor server = (Acceptor)context.getBean("Server");
+		GameStart gs = new GameStart("src/main/resources/springGS.xml");
+		Acceptor server = (Acceptor)gs.context.getBean("Server");
 		server.run();
-		Connector client = (Connector)context.getBean("Client");
+		Connector client = (Connector)gs.context.getBean("Client");
 		client.run();
 	}
 	

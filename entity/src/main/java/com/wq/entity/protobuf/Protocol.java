@@ -27,25 +27,35 @@ public final class Protocol {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // required int32 fromId = 2;
+    // required string fromId = 2;
     /**
-     * <code>required int32 fromId = 2;</code>
+     * <code>required string fromId = 2;</code>
      */
     boolean hasFromId();
     /**
-     * <code>required int32 fromId = 2;</code>
+     * <code>required string fromId = 2;</code>
      */
-    int getFromId();
-
-    // optional int32 toId = 3;
+    java.lang.String getFromId();
     /**
-     * <code>optional int32 toId = 3;</code>
+     * <code>required string fromId = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getFromIdBytes();
+
+    // optional string toId = 3;
+    /**
+     * <code>optional string toId = 3;</code>
      */
     boolean hasToId();
     /**
-     * <code>optional int32 toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      */
-    int getToId();
+    java.lang.String getToId();
+    /**
+     * <code>optional string toId = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getToIdBytes();
   }
   /**
    * Protobuf type {@code com.wq.entity.protobuf.protocol}
@@ -103,14 +113,14 @@ public final class Protocol {
               name_ = input.readBytes();
               break;
             }
-            case 16: {
+            case 18: {
               bitField0_ |= 0x00000002;
-              fromId_ = input.readInt32();
+              fromId_ = input.readBytes();
               break;
             }
-            case 24: {
+            case 26: {
               bitField0_ |= 0x00000004;
-              toId_ = input.readInt32();
+              toId_ = input.readBytes();
               break;
             }
           }
@@ -196,42 +206,96 @@ public final class Protocol {
       }
     }
 
-    // required int32 fromId = 2;
+    // required string fromId = 2;
     public static final int FROMID_FIELD_NUMBER = 2;
-    private int fromId_;
+    private java.lang.Object fromId_;
     /**
-     * <code>required int32 fromId = 2;</code>
+     * <code>required string fromId = 2;</code>
      */
     public boolean hasFromId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required int32 fromId = 2;</code>
+     * <code>required string fromId = 2;</code>
      */
-    public int getFromId() {
-      return fromId_;
+    public java.lang.String getFromId() {
+      java.lang.Object ref = fromId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          fromId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string fromId = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFromIdBytes() {
+      java.lang.Object ref = fromId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        fromId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
-    // optional int32 toId = 3;
+    // optional string toId = 3;
     public static final int TOID_FIELD_NUMBER = 3;
-    private int toId_;
+    private java.lang.Object toId_;
     /**
-     * <code>optional int32 toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      */
     public boolean hasToId() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional int32 toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      */
-    public int getToId() {
-      return toId_;
+    public java.lang.String getToId() {
+      java.lang.Object ref = toId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          toId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string toId = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getToIdBytes() {
+      java.lang.Object ref = toId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        toId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private void initFields() {
       name_ = "";
-      fromId_ = 0;
-      toId_ = 0;
+      fromId_ = "";
+      toId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -264,10 +328,10 @@ public final class Protocol {
         output.writeBytes(1, getNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, fromId_);
+        output.writeBytes(2, getFromIdBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, toId_);
+        output.writeBytes(3, getToIdBytes());
       }
       extensionWriter.writeUntil(10001, output);
       getUnknownFields().writeTo(output);
@@ -285,11 +349,11 @@ public final class Protocol {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, fromId_);
+          .computeBytesSize(2, getFromIdBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, toId_);
+          .computeBytesSize(3, getToIdBytes());
       }
       size += extensionsSerializedSize();
       size += getUnknownFields().getSerializedSize();
@@ -410,9 +474,9 @@ public final class Protocol {
         super.clear();
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        fromId_ = 0;
+        fromId_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
-        toId_ = 0;
+        toId_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -476,10 +540,14 @@ public final class Protocol {
           onChanged();
         }
         if (other.hasFromId()) {
-          setFromId(other.getFromId());
+          bitField0_ |= 0x00000002;
+          fromId_ = other.fromId_;
+          onChanged();
         }
         if (other.hasToId()) {
-          setToId(other.getToId());
+          bitField0_ |= 0x00000004;
+          toId_ = other.toId_;
+          onChanged();
         }
         this.mergeExtensionFields(other);
         this.mergeUnknownFields(other.getUnknownFields());
@@ -595,68 +663,150 @@ public final class Protocol {
         return this;
       }
 
-      // required int32 fromId = 2;
-      private int fromId_ ;
+      // required string fromId = 2;
+      private java.lang.Object fromId_ = "";
       /**
-       * <code>required int32 fromId = 2;</code>
+       * <code>required string fromId = 2;</code>
        */
       public boolean hasFromId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required int32 fromId = 2;</code>
+       * <code>required string fromId = 2;</code>
        */
-      public int getFromId() {
-        return fromId_;
+      public java.lang.String getFromId() {
+        java.lang.Object ref = fromId_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          fromId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>required int32 fromId = 2;</code>
+       * <code>required string fromId = 2;</code>
        */
-      public Builder setFromId(int value) {
-        bitField0_ |= 0x00000002;
+      public com.google.protobuf.ByteString
+          getFromIdBytes() {
+        java.lang.Object ref = fromId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          fromId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string fromId = 2;</code>
+       */
+      public Builder setFromId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
         fromId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 fromId = 2;</code>
+       * <code>required string fromId = 2;</code>
        */
       public Builder clearFromId() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        fromId_ = 0;
+        fromId_ = getDefaultInstance().getFromId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string fromId = 2;</code>
+       */
+      public Builder setFromIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        fromId_ = value;
         onChanged();
         return this;
       }
 
-      // optional int32 toId = 3;
-      private int toId_ ;
+      // optional string toId = 3;
+      private java.lang.Object toId_ = "";
       /**
-       * <code>optional int32 toId = 3;</code>
+       * <code>optional string toId = 3;</code>
        */
       public boolean hasToId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int32 toId = 3;</code>
+       * <code>optional string toId = 3;</code>
        */
-      public int getToId() {
-        return toId_;
+      public java.lang.String getToId() {
+        java.lang.Object ref = toId_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          toId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>optional int32 toId = 3;</code>
+       * <code>optional string toId = 3;</code>
        */
-      public Builder setToId(int value) {
-        bitField0_ |= 0x00000004;
+      public com.google.protobuf.ByteString
+          getToIdBytes() {
+        java.lang.Object ref = toId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          toId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string toId = 3;</code>
+       */
+      public Builder setToId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
         toId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 toId = 3;</code>
+       * <code>optional string toId = 3;</code>
        */
       public Builder clearToId() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        toId_ = 0;
+        toId_ = getDefaultInstance().getToId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string toId = 3;</code>
+       */
+      public Builder setToIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        toId_ = value;
         onChanged();
         return this;
       }
@@ -688,7 +838,7 @@ public final class Protocol {
     java.lang.String[] descriptorData = {
       "\n\024proto/Protocol.proto\022\026com.wq.entity.pr" +
       "otobuf\"=\n\010protocol\022\014\n\004name\030\001 \002(\t\022\016\n\006from" +
-      "Id\030\002 \002(\005\022\014\n\004toId\030\003 \001(\005*\005\010d\020\221N"
+      "Id\030\002 \002(\t\022\014\n\004toId\030\003 \001(\t*\005\010d\020\221N"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

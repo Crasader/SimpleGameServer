@@ -1,8 +1,5 @@
 package com.wq.worldServer.service;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,33 +11,11 @@ import com.wq.entity.protobuf.server.ServerLogin;
 import com.wq.entity.protobuf.server.ServerLogin.WorldLoginReq;
 import com.wq.entity.protobuf.server.ServerLogin.WorldLoginRes;
 import com.wq.entity.server.ServerInfo;
-import com.wq.gameServer.service.Service;
+import com.wq.gameServer.service.GameService;
 
-public class ServerLoginService extends Service{
+public class ServerLoginService extends GameService{
 
-	private ServerInfo currentServer;
 	private Map<Integer, ServerInfo> servers = new HashMap<>();
-	
-	@Override
-	public void activeService(ChannelHandlerContext ctx) {
-		Channel channel = ctx.channel();
-		String address = channel.remoteAddress().toString();
-		boolean hasConnected = false;
-		for(ServerInfo server : servers.values()){
-			if(address.equals(server.getIp()+":"+server.getPort())){
-				hasConnected = true;
-				break;
-			}
-		}
-		if(!hasConnected){
-			WorldLoginReq.Builder request = WorldLoginReq.newBuilder();
-			protocol.Builder message = protocol.newBuilder();
-			message.setName("ServerLoginService_login");
-			message.setFromId(currentServer.getId());
-			message.setExtension(ServerLogin.worldLoginReq, request.build());
-			channel.write(message.build());
-		}
-	}
 	
 	public void login(protocol msg){
 		WorldLoginRes response = msg.getExtension(ServerLogin.worldLoginRes);
@@ -62,9 +37,24 @@ public class ServerLoginService extends Service{
 			servers.put(serverId, server);
 		}
 	}
-	
+
 	@Override
-	public void inactiveService(ChannelHandlerContext ctx) {
+	public void connect(String channelId) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, ClassNotFoundException {
+		boolean hasConnected = false;
+		for(ServerInfo server : servers.values()){
+			if(server.getChannel().id().asShortText().equals(channelId)){
+				hasConnected = true;
+				break;
+			}
+		}
+		if(!hasConnected){
+			WorldLoginReq.Builder request = WorldLoginReq.newBuilder();
+			write(channelId, request.build());
+		}
+	}
+
+	@Override
+	public void disConnect(String channelId) {
 		Iterator<Entry<Integer, ServerInfo>> it = servers.entrySet().iterator();
 		while(it.hasNext()){
 			Entry<Integer, ServerInfo> entry = it.next();
@@ -74,13 +64,4 @@ public class ServerLoginService extends Service{
 			}
 		}
 	}
-
-	public ServerInfo getCurrentServer() {
-		return currentServer;
-	}
-
-	public void setCurrentServer(ServerInfo currentServer) {
-		this.currentServer = currentServer;
-	}
-
 }

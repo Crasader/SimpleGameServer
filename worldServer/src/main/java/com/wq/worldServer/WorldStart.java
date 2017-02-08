@@ -1,16 +1,18 @@
 package com.wq.worldServer;
 
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
 import com.wq.gameServer.Acceptor;
 import com.wq.gameServer.GameStart;
 
 
-public class WorldStart {
-
+public class WorldStart extends GameStart{
+	
+	public WorldStart(String springName){
+		super(springName);
+	}
+	
 	public static void main(String[] args){
-		GameStart.context = new FileSystemXmlApplicationContext("src/main/resources/springGS.xml");
-		Acceptor server = (Acceptor)GameStart.context.getBean("Server");
+		WorldStart ws = new WorldStart("src/main/resources/springGS.xml");
+		Acceptor server = (Acceptor)ws.context.getBean("Server");
 		server.run();
 	}
 	

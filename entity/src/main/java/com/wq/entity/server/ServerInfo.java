@@ -1,6 +1,7 @@
 package com.wq.entity.server;
 
-import java.nio.channels.Channel;
+import io.netty.channel.Channel;
+
 import java.util.Date;
 
 public class ServerInfo {

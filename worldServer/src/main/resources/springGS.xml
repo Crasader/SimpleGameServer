@@ -12,7 +12,8 @@
 	    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 	<context:component-scan base-package="com.wq"/>
 	<aop:aspectj-autoproxy expose-proxy="true"/>
-	 
+	
+	<!-- Server -->
 	<bean id="WorldServerInfo" class="com.wq.entity.server.ServerInfo">
 		<property name="id" value="1"/>
 		<property name="name" value="WorldServer"/>
@@ -25,16 +26,20 @@
 		<property name="currentServer" ref="WorldServerInfo"/>
 		<property name="handlers">
 			<list>
+				<value>IdleStateHandler</value>
+				<value>IdleHandler</value>
 				<value>ByteEncoder</value>
 				<value>Encoder</value>
 				<value>ByteDecoder</value>
 				<value>Decoder</value>
 				<value>MessageHandler</value>
+				<value>ChannelHandler</value>
 				<value>LogHandler</value>
 			</list>
 		</property>
 	</bean>
 	
+	<!-- Handler -->
 	<bean id="ByteEncoder" class="io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender"/>
 	<bean id="Encoder" class="io.netty.handler.codec.protobuf.ProtobufEncoder"/>
 	<bean id="ByteDecoder" class="io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder" scope="prototype"/>
@@ -45,21 +50,25 @@
 		<constructor-arg name="prototype" ref="Protocol"/>
 		<constructor-arg name="extensionRegistry" ref="ExtensionRegistry"/>
 	</bean>
-	<bean id="LogHandler" class="com.wq.gameServer.handler.LogHandler" scope="prototype"/>
-	<bean id="MessageHandler" class="com.wq.gameServer.handler.MessageHandler" scope="prototype">
-		<property name="serviceNames">
-			<list>
-				<value>ServerLoginService</value>
-			</list>
-		</property>
-	</bean>
-	<bean id="Service" class="com.wq.gameServer.service.Service" abstract="true">
-		<property name="messageHandler" ref="MessageHandler"/>
-	</bean>
 	
-	<bean id="LogService" class="com.wq.gameServer.service.LogService"/>
-	<bean id="ServerLoginService" class="com.wq.worldServer.service.ServerLoginService" parent="Service">
-		<property name="currentServer" ref="WorldServerInfo"/>
+	<bean id="IdleStateHandler" class="io.netty.handler.timeout.IdleStateHandler" scope="prototype">
+		<constructor-arg name="readerIdleTimeSeconds" value="300"/>
+		<constructor-arg name="writerIdleTimeSeconds" value="150"/>
+		<constructor-arg name="allIdleTimeSeconds" value="150"/>
 	</bean>
+	<bean id="IdleHandler" class="com.wq.gameServer.handler.IdleHandler">
+		<property name="keepAliveName" value="keepAlive"/>
+	</bean>
+	<bean id="ChannelHandler" class="com.wq.gameServer.handler.ChannelHandler"/>
+	<bean id="LogHandler" class="com.wq.gameServer.handler.LogHandler"/>
+	<bean id="MessageHandler" class="com.wq.gameServer.handler.MessageHandler"/>
+
+	<!-- Service -->
+	<bean id="GameService" class="com.wq.gameServer.service.GameService" abstract="true" >
+		<property name="localServer" ref="WorldServerInfo"/>
+		<property name="handler" ref="MessageHandler"/>
+	</bean>
+	<bean id="LogService" class="com.wq.gameServer.service.LogService"/>
+	<bean id="ServerLoginService" class="com.wq.worldServer.service.ServerLoginService" parent="GameService"/>
 	<import resource="springDB.xml" /> 
 </beans>

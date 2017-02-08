@@ -7,8 +7,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wq.entity.server.ServerInfo;
+import com.wq.gameServer.util.SpringUtil;
 
 public class Acceptor{
 
@@ -40,7 +41,7 @@ public class Acceptor{
     			@Override
     			public void initChannel(SocketChannel ch) throws Exception {
     				for(String handlerName : getHandlers()){
-    					ch.pipeline().addLast((ChannelHandler)GameStart.context.getBean(handlerName));
+    					ch.pipeline().addLast((ChannelHandler)SpringUtil.context.getBean(handlerName));
     				}
     			}
     		})
@@ -75,7 +76,7 @@ public class Acceptor{
     				}else{
     					logger.info("Unbind from " + currentServer.getPort() + "succeed");
     				}
-    				future.channel().eventLoop().shutdown();
+    				future.channel().eventLoop().shutdownGracefully();
     			}
     		});
     	}catch(Exception e){

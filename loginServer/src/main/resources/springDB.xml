@@ -62,4 +62,20 @@
 	<bean id="RedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
 		<property name="connectionFactory" ref="JedisConnectionFactory"/>
 	</bean>
+	
+	<!-- 事务相关 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="DataSource" />
+    </bean>
+    
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <aop:config>
+        <aop:pointcut id="interceptorPointCuts" expression="execution(* com.wq.database.mybatis.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="interceptorPointCuts" />       
+    </aop:config>
 </beans>

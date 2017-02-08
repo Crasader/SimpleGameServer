@@ -7,8 +7,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wq.entity.server.ServerInfo;
+import com.wq.gameServer.util.SpringUtil;
 
 public class Connector{
 	
@@ -38,7 +39,7 @@ public class Connector{
 				@Override
 				public void initChannel(SocketChannel ch) throws Exception {
 					for(String handlerName : getHandlers()){
-						ch.pipeline().addLast((ChannelHandler)GameStart.context.getBean(handlerName));
+						ch.pipeline().addLast((ChannelHandler)SpringUtil.context.getBean(handlerName));
 					}
 				}
 			});
@@ -71,7 +72,7 @@ public class Connector{
 					}else{
 						logger.info("Disconnect from " + serverToConnect.getName() + " succeed");
 					}
-					future.channel().eventLoop().shutdown();
+					future.channel().eventLoop().shutdownGracefully();
 				}
 			});
 		}catch(Exception e){
